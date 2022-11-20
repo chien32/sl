@@ -16,5 +16,7 @@ currently only works with Windows, plans for Linux compatibility in the future<b
 this is a work in progress and a personal project<br><br>
 <b>please don't actually use it for anything<b><br>
 <sup>don't even look at the code</sup>
+<br><br><br><br>
 
-![example program made with sl](https://imgur.com/a/7QbiGze)
+example of program made with sl, a music tracker:
+![example](https://github.com/chien32/sl/blob/main/tracker.png)
