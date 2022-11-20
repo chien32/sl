@@ -21,13 +21,13 @@ this is a work in progress and a personal project<br><br>
 ### examples of programs made with sl:
 
 - music tracker<br><br>
-![example](https://github.com/chien32/sl/blob/main/tracker.png)
+![example](https://github.com/chien32/sl/blob/main/img/tracker.png)
 
 - life simulator<br><br>
-![example](https://github.com/chien32/sl/blob/main/sim.png)
+![example](https://github.com/chien32/sl/blob/main/img/sim.png)
 
 - hardware rendering<br><br>
-![example](https://github.com/chien32/sl/blob/main/block.png)
+![example](https://github.com/chien32/sl/blob/main/img/block.png)
 
 - early software rendering test<br><br>
-![example](https://github.com/chien32/sl/blob/main/soft.png)
+![example](https://github.com/chien32/sl/blob/main/img/soft.png)
