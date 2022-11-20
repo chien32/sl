@@ -14,7 +14,7 @@
 to be used with C, specifically C89 for best compatibility<br>
 currently only works with Windows, plans for Linux compatibility in the future<br>
 this is a work in progress and a personal project<br><br>
-<b>please don't actually use it for anything<b><br>
+<b>please don't actually use it for anything</b><br>
 <sup>don't even look at the code</sup>
 <br><br><br><br>
 
