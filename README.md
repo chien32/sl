@@ -1,5 +1,5 @@
 # sl
-graphics &amp; audio lib (very shitty)
+single header graphics &amp; audio lib (very shitty)
 ______________________________________
 
 features:
