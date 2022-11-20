@@ -1,0 +1,112 @@
+#version 330 core
+layout(location = 0) in uvec2 inID;
+
+out vec3 outPos;
+out vec3 outModel;
+out vec3 outWorld;
+out vec3 outNormal;
+out vec2 outUV;
+
+flat out uint outType;
+flat out int outSelected;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+uniform float worldTime;
+
+uniform int debugCol;
+uniform int divisions;
+
+uniform int selectedX;
+uniform int selectedY;
+
+const vec3 COLS[8] = vec3[8](
+  vec3(1.0, 0.0, 0.0),
+  vec3(1.0, 0.5, 0.0),
+  vec3(1.0, 1.0, 0.0),
+  vec3(0.5, 1.0, 0.0),
+  vec3(0.0, 1.0, 0.0),
+  vec3(0.0, 1.0, 0.5),
+  vec3(0.0, 1.0, 1.0),
+  vec3(0.0, 0.5, 1.0)
+);
+
+const float CUBE[8*5] = float[8*5](
+  -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  /* left   bottom  back  0 */
+  -0.5f, 0.5f, -0.5f, 0.0f, 0.5f,   /* left   top     back  1 */
+  0.5f, -0.5f, -0.5f, 0.5f, 0.0f,   /* right  bottom  back  2 */
+  0.5f, 0.5f, -0.5f, 0.5f, 0.5f,    /* right  top     back  3 */
+  -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,   /* left   bottom  front 4 */
+  -0.5f, 0.5f, 0.5f, 0.0f, 0.5f,    /* left   top     front 5 */
+  0.5f, -0.5f, 0.5f, 0.5f, 0.0f,    /* right  bottom  front 6 */
+  0.5f, 0.5f, 0.5f, 0.5f, 0.5f      /* right   top    front 7 */
+);
+
+#define M1 1597334677U /* 1719413*929 */
+#define M2 3812015801U /* 140473*2467*11 */
+
+float NoiseHashFast(uint x, uint y) {
+  x *= M1;
+  y *= M2;
+  return float((x ^ y) * M1) * (1.0/float(0xffffffffU));
+}
+
+float NoiseValue2D(float x, float y) {
+  float ix = floor(x);
+  float iy = floor(y);
+  float fx = (x - ix);
+  float fy = (y - iy);
+  float a = NoiseHashFast(uint(ix), uint(iy));
+  float b = NoiseHashFast(uint(ix + 1.0), uint(iy));
+  float c = NoiseHashFast(uint(ix), uint(iy + 1.0));
+  float d = NoiseHashFast(uint(ix + 1.0), uint(iy + 1.0));
+  float ux = (fx * fx * (3.0 - 2.0*fx));
+  float uy = (fy * fy * (3.0 - 2.0*fy));
+  return mix(a, b, ux) + (c - a) * uy * (1.0 - ux) + (d - b) * ux * uy;
+}
+
+
+vec3 Waves(float x, float y, float t, float s) {
+  float ts = sin(t*0.8)*0.5;
+  float tc = cos(t*0.8)*0.5;
+  float rx = x*10.0;
+  float ry = y*10.0;
+  float a1 = NoiseValue2D(rx + ts, ry + tc);
+  float a2 = NoiseValue2D(rx + tc + 1.0, ry + ts);
+  float a3 = NoiseValue2D(rx + ts, ry + tc + 1.0);
+  return vec3(a1, a2, a3)*s;
+}
+
+void main() {
+  uint ID = inID.x;
+  uint dataX = (ID)           & 0x0FFU;
+  uint dataY = (ID >> 8U)     & 0x0FFU;
+  uint dataH = (ID >> 16U)    & 0xFFFU;
+  uint dataV = (ID >> 28U)    & 0xFU;
+  uint dataN = (inID.y)       & 0xFFFFFFU;
+  uint dataT = (inID.y >> 24U) & 0xFFU;
+  float nx = (float((dataN >> 0U) & 0xFFU) - 128.0f) / 127.0;
+  float ny = (float((dataN >> 8U) & 0xFFU) - 128.0f) / 127.0;
+  float nz = (float((dataN >> 16U) & 0xFFU) - 128.0f) / 127.0;
+  uint vert = dataV*5U;
+  float wl = 0.01;
+  vec3 height = vec3(0.0, float(dataH)/float(divisions), 0.0);
+  vec3 offset = vec3(float(dataX), wl, float(dataY));
+  vec3 point = vec3(CUBE[vert + 0U], CUBE[vert + 1U], CUBE[vert + 2U]);
+  vec3 pos = point + offset + height;
+  vec4 world = model * vec4(pos, 1.0);
+  vec3 nor = vec3(nx, nz, ny);
+  nor += Waves(world.x + 0.5, world.z + 0.5, worldTime*2.0, 0.3);
+  outUV = vec2(CUBE[vert + 3U], CUBE[vert + 4U]);
+  outPos = world.xyz;
+  outModel = pos;
+  outNormal = nor; 
+  outWorld = world.xyz;
+  outType = dataT;
+  outSelected = 
+    (uint(selectedX) == dataX && uint(selectedY) == dataY) ? 1 : 0;
+  gl_Position = projection * view * model * vec4(pos, 1.0);
+};
+
