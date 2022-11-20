@@ -16,3 +16,5 @@ currently only works with Windows, plans for Linux compatibility in the future<b
 this is a work in progress and a personal project<br><br>
 <b>please don't actually use it for anything<b><br>
 <sup>don't even look at the code</sup>
+
+![example program made with sl](https://imgur.com/a/7QbiGze)
