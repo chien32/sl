@@ -1,6 +1,5 @@
 # sl
 ## single header graphics &amp; audio lib (very shitty)
-______________________________________
 
 ### features:
 - can open a window
