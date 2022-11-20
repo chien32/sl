@@ -18,5 +18,5 @@ this is a work in progress and a personal project<br><br>
 <sup>don't even look at the code</sup>
 <br><br><br><br>
 
-example of program made with sl, a music tracker:<br>
+- example of program (a music tracker) made with sl:<br><br>
 ![example](https://github.com/chien32/sl/blob/main/tracker.png)
